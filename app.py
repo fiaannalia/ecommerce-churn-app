@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import pickle
+import os
 from xgboost import XGBClassifier
 
 # Konfigurasi halaman
@@ -48,9 +49,14 @@ df_customer = input_user()
 st.subheader("📄 Data Pelanggan")
 st.dataframe(df_customer, use_container_width=True)
 
-# Load model
-model_loaded = pickle.load(open("model_xgb.sav", "rb"))
-prediction = model_loaded.predict(df_customer)
+model_path = "model_xgb.sav"
+
+if os.path.exists(model_path):
+    with open(model_path, "rb") as file:
+        model_loaded = pickle.load(file)
+else:
+    raise FileNotFoundError(f"Model file not found at {model_path}")
+
 
 # Output prediksi
 st.markdown("---")
